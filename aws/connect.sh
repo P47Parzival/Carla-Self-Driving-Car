@@ -9,4 +9,5 @@ KEY="aws/carla-rl-key.pem"
 
 echo "TensorBoard will be reachable at http://localhost:6006 once started on the instance."
 echo "Live camera feed will be reachable at http://localhost:8082 once started on the instance."
-ssh -i "$KEY" -L 6006:localhost:6006 -L 8082:localhost:8082 -o StrictHostKeyChecking=accept-new "ubuntu@$IP"
+echo "Live LIDAR bird's-eye view will be reachable at http://localhost:8083 once started on the instance."
+ssh -i "$KEY" -L 6006:localhost:6006 -L 8082:localhost:8082 -L 8083:localhost:8083 -o StrictHostKeyChecking=accept-new "ubuntu@$IP"

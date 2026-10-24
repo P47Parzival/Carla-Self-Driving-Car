@@ -48,7 +48,10 @@ tmux send-keys -t "$SESSION:tensorboard" "cd $PROJECT_DIR && source $VENV_DIR/bi
 tmux new-window -t "$SESSION" -n live
 tmux send-keys -t "$SESSION:live" "source $VENV_DIR/bin/activate && python $PROJECT_DIR/aws/live_view.py" C-m
 
+tmux new-window -t "$SESSION" -n lidar
+tmux send-keys -t "$SESSION:lidar" "source $VENV_DIR/bin/activate && python $PROJECT_DIR/aws/lidar_live_view.py" C-m
+
 echo "Started. Attach with: tmux attach -t $SESSION"
-echo "Switch windows inside tmux with: Ctrl+b then 0 (carla) / 1 (train) / 2 (tensorboard) / 3 (live)"
+echo "Switch windows inside tmux with: Ctrl+b then 0 (carla) / 1 (train) / 2 (tensorboard) / 3 (live) / 4 (lidar)"
 echo "Detach without killing: Ctrl+b then d"
 echo "View TensorBoard and the live feed from your laptop via aws/connect.sh"
