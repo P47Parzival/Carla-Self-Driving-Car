@@ -8,4 +8,5 @@ IP=$(cat aws/instance_ip.txt)
 KEY="aws/carla-rl-key.pem"
 
 echo "TensorBoard will be reachable at http://localhost:6006 once started on the instance."
-ssh -i "$KEY" -L 6006:localhost:6006 -o StrictHostKeyChecking=accept-new "ubuntu@$IP"
+echo "Live camera feed will be reachable at http://localhost:8082 once started on the instance."
+ssh -i "$KEY" -L 6006:localhost:6006 -L 8082:localhost:8082 -o StrictHostKeyChecking=accept-new "ubuntu@$IP"
