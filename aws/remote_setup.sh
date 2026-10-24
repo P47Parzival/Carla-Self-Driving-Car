@@ -15,9 +15,19 @@ mkdir -p "$WORKDIR" "$CARLA_DIR" "$PROJECT_DIR/checkpoints" "$PROJECT_DIR/sac_te
 echo "== Checking NVIDIA driver =="
 nvidia-smi --query-gpu=driver_version,name --format=csv,noheader
 
+echo "== Waiting for any background apt/unattended-upgrades to finish =="
+while sudo fuser /var/lib/dpkg/lock-frontend >/dev/null 2>&1; do
+  echo "dpkg lock held, waiting 10s..."
+  sleep 10
+done
+
 echo "== Installing system dependencies =="
 sudo apt-get update -y
-sudo apt-get install -y libomp5 vulkan-tools libvulkan1 unzip tmux python3-venv python3-pip
+sudo apt-get install -y software-properties-common
+sudo add-apt-repository -y ppa:deadsnakes/ppa
+sudo apt-get update -y
+# CARLA 0.10.0's bundled Python API wheel is built for Python 3.12 (cp312)
+sudo apt-get install -y libomp5 vulkan-tools libvulkan1 unzip tmux python3.12 python3.12-venv python3-pip
 
 echo "== Downloading CARLA $CARLA_VERSION server (this is a large download, ~15-20GB) =="
 if [ ! -f "$WORKDIR/carla.tar.gz" ]; then
@@ -27,8 +37,9 @@ fi
 echo "== Extracting CARLA =="
 tar -xzf "$WORKDIR/carla.tar.gz" -C "$CARLA_DIR" --strip-components=1
 
-echo "== Creating Python venv (isolated, not global) =="
-python3 -m venv "$VENV_DIR"
+echo "== Creating Python 3.12 venv (isolated, not global) =="
+rm -rf "$VENV_DIR"
+python3.12 -m venv "$VENV_DIR"
 source "$VENV_DIR/bin/activate"
 pip install --upgrade pip
 

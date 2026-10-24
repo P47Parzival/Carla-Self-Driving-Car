@@ -11,7 +11,8 @@ KEY="aws/carla-rl-key.pem"
 ssh -i "$KEY" -o StrictHostKeyChecking=accept-new "ubuntu@$IP" "mkdir -p ~/carla-rl/project/aws"
 
 scp -i "$KEY" carla_env.py train_sac_carla.py "ubuntu@$IP:~/carla-rl/project/"
-scp -i "$KEY" aws/sync_to_s3.sh aws/install_cron.sh aws/.env "ubuntu@$IP:~/carla-rl/project/aws/"
+scp -i "$KEY" aws/sync_to_s3.sh aws/install_cron.sh "ubuntu@$IP:~/carla-rl/project/aws/"
+scp -i "$KEY" aws/.env "ubuntu@$IP:~/carla-rl/project/.env"
 scp -i "$KEY" aws/remote_setup.sh aws/run_training.sh "ubuntu@$IP:~/carla-rl/"
 
 echo "== Running remote setup (downloads CARLA + builds venv, ~15-20 min) =="

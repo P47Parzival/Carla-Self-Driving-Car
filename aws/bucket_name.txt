@@ -1,1 +1,1 @@
-carla-rl-checkpoints-026243800640
+carla-rl-checkpoints-ap-south-1-026243800640

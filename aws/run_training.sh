@@ -19,8 +19,15 @@ fi
 tmux new-session -d -s "$SESSION" -n carla
 tmux send-keys -t "$SESSION:carla" "cd $CARLA_DIR && ./CarlaUnreal.sh -RenderOffScreen -nosound -quality-level=Low" C-m
 
-echo "Waiting 30s for CARLA server to come up..."
-sleep 30
+echo "Waiting for CARLA server to open port 2000 (up to 5 min)..."
+for i in $(seq 1 60); do
+  if (echo > /dev/tcp/127.0.0.1/2000) 2>/dev/null; then
+    echo "Port open after ${i}x5s. Giving it 15s more to finish loading the map..."
+    sleep 15
+    break
+  fi
+  sleep 5
+done
 
 tmux new-window -t "$SESSION" -n train
 tmux send-keys -t "$SESSION:train" "cd $PROJECT_DIR && source $VENV_DIR/bin/activate && python train_sac_carla.py $TRAIN_ARGS" C-m
