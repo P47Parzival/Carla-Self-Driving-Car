@@ -6,7 +6,7 @@ This project is about training a simulated self-driving car using reinforcement 
 
   1)Simulated Driving: It uses the CARLA simulator to create a realistic driving environment complete with traffic, weather changes, and various obstacles.
 
-  2)Learning to Drive: The car learns to drive using a method called Soft Actor-Critic (SAC), which is a popular reinforcement learning algorithm.
+  2)Learning to Drive: The car learns to drive using reinforcement learning. Four algorithms were evaluated — Soft Actor-Critic (SAC), PPO, DDPG, and TD3 — and SAC was selected as the final algorithm since it performed best on this task (see "Other RL algorithms" section below for the comparison scripts).
 
   3)Custom Features: The system processes camera images and other state information using a custom neural network. This network uses convolutional layers with residual blocks and an attention mechanism to better understand what’s happening     on the road.
 
@@ -51,6 +51,30 @@ Features for futures release: (for contributors <3)
 1) making the reward system better and better training features
 
 2) More training matrices for visualization
+
+------------------------------------------------------------------------------------------------------------------------------------------------------
+
+## 🧪 Other RL algorithms (comparison baselines)
+
+The project evaluates four RL algorithms on this driving task: **SAC, PPO, DDPG, and TD3**. **SAC is the algorithm actually used for results and the one with the full training setup** (hyperparameter search via Optuna, replay-buffer checkpointing, Arduino integration, etc., all in `train_sac_carla.py`) — it performed best in practice. The other three are provided as baseline comparison scripts:
+
+| Algorithm | Script | Type |
+|-----------|--------|------|
+| **SAC** (used) | `train_sac_carla.py` | Off-policy, stochastic policy, automatic entropy tuning |
+| PPO | `train_ppo_carla.py` | On-policy, stochastic policy, clipped surrogate objective |
+| DDPG | `train_ddpg_carla.py` | Off-policy, deterministic policy + explicit exploration noise |
+| TD3 | `train_td3_carla.py` | Off-policy, deterministic policy, twin critics + delayed updates |
+
+All three baseline scripts reuse the exact same `CarlaEnv` and `CombinedExtractor` (the CNN + LIDAR CNN + state MLP feature-fusion network) as the SAC script, so the comparison is apples-to-apples — only the RL algorithm differs. They're intentionally simpler than `train_sac_carla.py` (no Optuna search, no replay-buffer-inclusive checkpointing, no Arduino handling duplication) since they exist to demonstrate the algorithm comparison, not to be the production training path.
+
+Run any of them the same way as the SAC script:
+```powershell
+python train_ppo_carla.py
+python train_ddpg_carla.py --resume ".\checkpoints_ddpg\ddpg_carla_20000_steps.zip"
+python train_td3_carla.py --total_timesteps 200000
+```
+
+Each writes its own checkpoints (`checkpoints_ppo/`, `checkpoints_ddpg/`, `checkpoints_td3/`) and TensorBoard logs (`ppo_tensorboard/`, `ddpg_tensorboard/`, `td3_tensorboard/`) so they never collide with the main SAC run's files.
 
 ------------------------------------------------------------------------------------------------------------------------------------------------------
 
